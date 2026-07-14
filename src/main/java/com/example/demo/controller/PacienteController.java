@@ -18,7 +18,8 @@ public class PacienteController {
     }
 
     @GetMapping
-    public List<Paciente> obtenerTodos() {
-        return repository.findAll();
-    }
+    public List<Paciente> obtenerTodos() { return repository.findAll(); }
+
+    @PostMapping
+    public Paciente guardar(@RequestBody Paciente paciente) { return repository.save(paciente); }
 }

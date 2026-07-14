@@ -18,7 +18,8 @@ public class MedicoController {
     }
 
     @GetMapping
-    public List<Medico> obtenerTodos() {
-        return repository.findAll();
-    }
+    public List<Medico> obtenerTodos() { return repository.findAll(); }
+
+    @PostMapping
+    public Medico guardar(@RequestBody Medico medico) { return repository.save(medico); }
 }

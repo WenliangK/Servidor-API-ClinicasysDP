@@ -18,7 +18,8 @@ public class CitaController {
     }
 
     @GetMapping
-    public List<Cita> obtenerTodas() {
-        return repository.findAll();
-    }
+    public List<Cita> obtenerTodas() { return repository.findAll(); }
+
+    @PostMapping
+    public Cita guardar(@RequestBody Cita cita) { return repository.save(cita); }
 }

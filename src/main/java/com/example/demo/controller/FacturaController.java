@@ -18,7 +18,8 @@ public class FacturaController {
     }
 
     @GetMapping
-    public List<Factura> obtenerTodas() {
-        return repository.findAll();
-    }
+    public List<Factura> obtenerTodas() { return repository.findAll(); }
+
+    @PostMapping
+    public Factura guardar(@RequestBody Factura factura) { return repository.save(factura); }
 }
