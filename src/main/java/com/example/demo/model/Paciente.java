@@ -1,9 +1,11 @@
 package com.example.demo.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "pacientes")
+@JsonIgnoreProperties(ignoreUnknown = true) // salvaguarda: no rechazar el POST si el cliente manda un campo extra
 public class Paciente {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

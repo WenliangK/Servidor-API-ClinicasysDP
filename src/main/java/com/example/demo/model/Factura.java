@@ -1,11 +1,13 @@
 package com.example.demo.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "facturas")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Factura {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,6 +17,9 @@ public class Factura {
     private Long citaId;
 
     private String descripcion;
+
+    // El cliente envía "costo" como double primitivo; Jackson lo convierte
+    // sin problema a BigDecimal al deserializar, así que este tipo está bien.
     private BigDecimal costo;
 
     @Column(name = "fecha_emision")

@@ -12,7 +12,7 @@ public class WebConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                // Esto permite que tu cliente Swing (Java) envíe POST desde cualquier IP
+                // Esto permite que tu cliente Swing (Java) envíe POST/PUT/DELETE desde cualquier IP
                 registry.addMapping("/**")
                         .allowedOrigins("*")
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS");
