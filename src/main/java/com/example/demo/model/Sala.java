@@ -1,11 +1,9 @@
 package com.example.demo.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "salas")
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class Sala {
 
     // El cliente usa "numero" como identificador de negocio (no un "id"

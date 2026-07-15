@@ -1,71 +1,158 @@
 package com.example.demo.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
+
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "citas")
 public class Cita {
 
+    public enum Estado {
+        EN_ESPERA,
+        EN_CONSULTORIO,
+        ATENDIDO,
+        CANCELADO
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // CORREGIDO: el cliente envía el objeto Paciente completo bajo la clave
-    // "paciente", no un "pacienteId" suelto. Antes este campo no existía
-    // aquí, así que Jackson rechazaba el POST por propiedad desconocida.
-    @ManyToOne
-    @JoinColumn(name = "paciente_id")
+    @NotNull(message = "El paciente es obligatorio")
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "paciente_id", nullable = false)
     private Paciente paciente;
 
+    @Column(nullable = false, length = 120)
     private String medico;
 
-    @Column(name = "fecha_hora")
+    @NotNull(message = "La fecha y hora son obligatorias")
+    @Column(name = "fecha_hora", nullable = false)
     private LocalDateTime fechaHora;
 
+    @NotBlank(message = "El motivo es obligatorio")
+    @Size(max = 500, message = "El motivo no puede superar 500 caracteres")
+    @Column(nullable = false, length = 500)
     private String motivo;
-    private String estado;
 
-    // CORREGIDO: estos dos campos no existían en el servidor. El cliente los
-    // envía siempre (aunque hoy en día viajen en 0 porque el modelo Cita del
-    // cliente aún no los setea desde ningún constructor — ver nota en el
-    // Modelo/Cita.java del cliente).
-    @Column(name = "medico_id")
-    private Integer medicoId;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 30)
+    private Estado estado = Estado.EN_ESPERA;
 
-    @Column(name = "sala_id")
+    @NotNull(message = "El médico es obligatorio")
+    @Positive(message = "El identificador del médico debe ser positivo")
+    @Column(name = "medico_id", nullable = false)
+    private Long medicoId;
+
+    @NotNull(message = "La sala es obligatoria")
+    @Positive(message = "El número de sala debe ser positivo")
+    @Column(name = "sala_id", nullable = false)
     private Integer salaId;
 
-    @Column(name = "fecha_actualizacion")
+    @Column(name = "fecha_actualizacion", nullable = false)
     private LocalDateTime fechaActualizacion;
 
-    public Cita() {}
+    public Cita() {
+    }
 
-    // Getters y Setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    @PrePersist
+    void antesDeGuardar() {
+        if (estado == null) {
+            estado = Estado.EN_ESPERA;
+        }
+        fechaActualizacion = LocalDateTime.now();
+    }
 
-    public Paciente getPaciente() { return paciente; }
-    public void setPaciente(Paciente paciente) { this.paciente = paciente; }
+    @PreUpdate
+    void antesDeActualizar() {
+        fechaActualizacion = LocalDateTime.now();
+    }
 
-    public String getMedico() { return medico; }
-    public void setMedico(String medico) { this.medico = medico; }
+    public Long getId() {
+        return id;
+    }
 
-    public LocalDateTime getFechaHora() { return fechaHora; }
-    public void setFechaHora(LocalDateTime fechaHora) { this.fechaHora = fechaHora; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public String getMotivo() { return motivo; }
-    public void setMotivo(String motivo) { this.motivo = motivo; }
+    public Paciente getPaciente() {
+        return paciente;
+    }
 
-    public String getEstado() { return estado; }
-    public void setEstado(String estado) { this.estado = estado; }
+    public void setPaciente(Paciente paciente) {
+        this.paciente = paciente;
+    }
 
-    public Integer getMedicoId() { return medicoId; }
-    public void setMedicoId(Integer medicoId) { this.medicoId = medicoId; }
+    public String getMedico() {
+        return medico;
+    }
 
-    public Integer getSalaId() { return salaId; }
-    public void setSalaId(Integer salaId) { this.salaId = salaId; }
+    public void setMedico(String medico) {
+        this.medico = medico == null ? null : medico.trim();
+    }
 
-    public LocalDateTime getFechaActualizacion() { return fechaActualizacion; }
-    public void setFechaActualizacion(LocalDateTime fechaActualizacion) { this.fechaActualizacion = fechaActualizacion; }
+    public LocalDateTime getFechaHora() {
+        return fechaHora;
+    }
+
+    public void setFechaHora(LocalDateTime fechaHora) {
+        this.fechaHora = fechaHora;
+    }
+
+    public String getMotivo() {
+        return motivo;
+    }
+
+    public void setMotivo(String motivo) {
+        this.motivo = motivo == null ? null : motivo.trim();
+    }
+
+    public Estado getEstado() {
+        return estado;
+    }
+
+    public void setEstado(Estado estado) {
+        this.estado = estado;
+    }
+
+    public Long getMedicoId() {
+        return medicoId;
+    }
+
+    public void setMedicoId(Long medicoId) {
+        this.medicoId = medicoId;
+    }
+
+    public Integer getSalaId() {
+        return salaId;
+    }
+
+    public void setSalaId(Integer salaId) {
+        this.salaId = salaId;
+    }
+
+    public LocalDateTime getFechaActualizacion() {
+        return fechaActualizacion;
+    }
+
+    public void setFechaActualizacion(LocalDateTime fechaActualizacion) {
+        this.fechaActualizacion = fechaActualizacion;
+    }
 }
