@@ -6,8 +6,6 @@ import jakarta.persistence.*;
 @Table(name = "salas")
 public class Sala {
 
-    // El cliente usa "numero" como identificador de negocio (no un "id"
-    // autogenerado), así que respetamos ese mismo campo como llave primaria.
     @Id
     private Integer numero;
 
